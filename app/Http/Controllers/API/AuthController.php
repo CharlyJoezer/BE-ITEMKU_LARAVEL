@@ -40,7 +40,7 @@ class AuthController extends Controller
             $getToken = ApiHelper::CreateToken();
             $createToken = Token::create([
                 'user_id' => $findUserdata['id_user'],
-                'token' => $getToken
+                'token' => 'Bearer '.$getToken
             ]);
             if($createToken){
                 return response()->json([
