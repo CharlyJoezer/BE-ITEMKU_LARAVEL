@@ -20,7 +20,7 @@ class RegisterController extends Controller
             return response()->json([
                 'status' => 'errors',
                 'errors' => $validator->errors()
-            ]);
+            ], 422);
         }
         $setInsertData = [
             'username' => $request->username,
