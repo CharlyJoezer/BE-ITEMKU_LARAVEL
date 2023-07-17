@@ -58,4 +58,33 @@ class AuthController extends Controller
         }
 
     }
+
+    public function logoutAndDeleteToken(Request $request){
+        $tokenFE = $request->header('Authorization');
+        $checkTokenAndGetId = ApiHelper::checkToken($tokenFE);
+        if(!$checkTokenAndGetId){
+            return response()->json([
+                'status' => 'error',
+                'errors' => 'Mohon Login terlebih dahulu!'
+            ], 403);
+        }
+
+        try{
+            $deleteToken = Token::where('token', $tokenFE)->delete();
+            if($deleteToken){
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Logout berhasil, Token dihapus!'
+                ], 200);
+            }else{
+                throw new \Exception();
+            }
+        }catch(\Exception){
+            return response()->json([
+                'status' => 'Server Error',
+                'error' => 'Server Error'
+            ], 500);
+        }
+
+    }
 }
