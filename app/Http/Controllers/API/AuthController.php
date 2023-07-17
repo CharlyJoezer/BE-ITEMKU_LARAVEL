@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Helpers\ApiHelper;
 use App\Models\Token;
 use App\Models\User;
 use Exception;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
