@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ShopController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\RegisterController;
 
@@ -25,3 +26,5 @@ Route::POST('/auth/login', [AuthController::class, 'createLoginToken']);
 Route::POST('/auth/register', [RegisterController::class, 'processRegister']);
 Route::GET('/auth/get-user-data', [UserController::class, 'getUserData']);
 Route::POST('/auth/logout', [AuthController::class, 'logoutAndDeleteToken']);
+
+Route::POST('/shop/create', [ShopController::class, 'createShop']);
