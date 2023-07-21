@@ -19,12 +19,16 @@ class UserController extends Controller
             ], 403);
         }
         try{
-            $getUser = User::where('id_user',$checkTokenAndGetId)->first(['username', 'email']);
+            $getUser = User::where('id_user',$checkTokenAndGetId)->with('shops')->first();
             if($getUser){
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Data user ditemukan!',
-                    'data' => $getUser
+                    'data' => [
+                        'username' => $getUser->username,
+                        'email' => $getUser->email,
+                        'shops' => !isset($getUser->shops->name_shop) ? null : $getUser->shops->name_shop,
+                    ]
                 ],200);
             }else{
                 return response()->json([
