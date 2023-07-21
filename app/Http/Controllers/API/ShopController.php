@@ -38,14 +38,22 @@ class ShopController extends Controller
         ];
 
         try{
-            $createShop = Shops::create($setInsertData);
-            if($createShop){
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Toko Berhasil dibuat!'
-                ], 201);
+            $checkAlreadyHaveShop = Shops::where('user_id', $checkToken)->get();
+            if(count($checkAlreadyHaveShop) <= 0){
+                $createShop = Shops::create($setInsertData);
+                if($createShop){
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Toko Berhasil dibuat!'
+                    ], 201);
+                }else{
+                    throw new \Exception();
+                }
             }else{
-                throw new \Exception();
+                return response()->json([
+                    'status' => 'Conflict',
+                    'message' => 'Kamu hanya bisa memiliki 1 Toko'
+                ], 409);
             }
         }catch(\Exception){
             return response()->json([
