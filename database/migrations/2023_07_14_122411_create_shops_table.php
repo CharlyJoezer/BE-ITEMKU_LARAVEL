@@ -21,6 +21,7 @@ return new class extends Migration
 
             $table->string('name_shop');
             $table->string('path_image_shop');
+            $table->enum('status', ['Tutup', 'Buka'])->default('Tutup');
             $table->timestamps();
         });
     }
