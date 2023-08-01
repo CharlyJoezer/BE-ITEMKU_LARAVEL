@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id_user')->on('users')->onDelete('cascade');
 
             $table->string('name_shop');
-            $table->string('path_image_shop');
+            $table->string('path_image_shop')->default('/assets/icon/profil.png');
             $table->enum('status', ['Tutup', 'Buka'])->default('Tutup');
             $table->timestamps();
         });
