@@ -134,9 +134,9 @@ class ShopController extends Controller
                     ],
                     'last_30_days_stats_order' => $last_30_days,
                 ],
-            ]);
+            ], 200);
 
-            
+
         }catch(Exception){
             return response()->json([
                 'status' => 'Server Error',
