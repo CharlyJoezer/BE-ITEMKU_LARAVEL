@@ -24,7 +24,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::POST('/auth/login', [AuthController::class, 'createLoginToken']);
 Route::POST('/auth/register', [RegisterController::class, 'processRegister']);
-Route::GET('/auth/get-user-data', [UserController::class, 'getUserData']);
+Route::GET('/auth/user-data', [UserController::class, 'getUserData']);
 Route::POST('/auth/logout', [AuthController::class, 'logoutAndDeleteToken']);
 
 Route::POST('/shop/create', [ShopController::class, 'createShop']);
+
+Route::GET('/shop/dashboard/home', [ShopController::class, 'getDashboardShopHome']);
