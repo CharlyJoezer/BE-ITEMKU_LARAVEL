@@ -10,8 +10,7 @@ use App\Http\Controllers\Controller;
 class UserController extends Controller
 {
     public function getUserData(Request $request){
-        $tokenFE = $request->header('Authorization');
-        $checkTokenAndGetId = ApiHelper::checkToken($tokenFE);
+        $checkTokenAndGetId = ApiHelper::checkToken($request);
         if(!$checkTokenAndGetId){
             return response()->json([
                 'status' => 'error',

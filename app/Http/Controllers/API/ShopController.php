@@ -14,8 +14,7 @@ use Illuminate\Support\Facades\Validator;
 class ShopController extends Controller
 {
     public function createShop(Request $request){
-        $token = $request->header('Authorization');
-        $checkToken = ApiHelper::checkToken($token);
+        $checkToken = ApiHelper::checkToken($request);
         if(!$checkToken){
             return response()->json([
                 'status' => 'error',
@@ -67,8 +66,7 @@ class ShopController extends Controller
     }
 
     public function getDashboardShopHome(Request $request){
-        $token = $request->header('Authorization');
-        $checkToken = ApiHelper::checkToken($token);
+        $checkToken = ApiHelper::checkToken($request);
         if(!$checkToken){
             return response()->json([
                 'status' => 'error',
