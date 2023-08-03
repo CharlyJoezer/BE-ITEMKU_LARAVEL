@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Token;
+use Illuminate\Http\Request;
 
 class ApiHelper{
     public static function CreateToken(){
@@ -15,7 +16,8 @@ class ApiHelper{
         return $randStr;
     }
 
-    public static function checkToken($token){
+    public static function checkToken($request){
+        $token = $request->header('Authorization');
         if(isset($token)){
             try{
                 $getToken = Token::where('token', $token)->first();
@@ -23,7 +25,10 @@ class ApiHelper{
                     return $getToken['user_id'];
                 }
                 else{
-                    return false;
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'Token is not found'
+                    ], 403);
                 }
                 
             }catch(\Exception){
@@ -36,7 +41,7 @@ class ApiHelper{
             return response()->json([
                 'status' => 'error',
                 'error' => 'Token is not found'
-            ], 422);
+            ], 403);
         }
     }
 }
