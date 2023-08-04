@@ -29,4 +29,7 @@ Route::POST('/auth/logout', [AuthController::class, 'logoutAndDeleteToken']);
 
 Route::POST('/shop/create', [ShopController::class, 'createShop']);
 
-Route::GET('/shop/dashboard/home', [ShopController::class, 'getDashboardShopHome']);
+Route::prefix('/shop/dashboard/')->group(function(){
+    Route::GET('home', [ShopController::class, 'getDashboardShopHome']);
+    Route::GET('pesanan/{status}', [ShopController::class, 'getDashboardPesanan']);
+});
