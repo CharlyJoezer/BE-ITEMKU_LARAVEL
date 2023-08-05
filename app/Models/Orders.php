@@ -12,15 +12,15 @@ class Orders extends Model
     protected $table = 'orders';
     protected $guarded = ['id_order'];
 
-    public function product(){
-        return $this->hasOne(Product::class, 'product_id', 'id_product');
+    public function products(){
+        return $this->hasOne(Product::class, 'id_product', 'product_id');
     }
 
     public function users(){
-        return $this->hasOne(User::class, 'buyer_id', 'id_user');
+        return $this->hasOne(User::class, 'id_user', 'buyer_id');
     }
 
     public function shops(){
-        return $this->hasOne(Shops::class, 'shop_id', 'id_shop');
+        return $this->hasOne(Shops::class, 'id_shop', 'shop_id');
     }
 }
