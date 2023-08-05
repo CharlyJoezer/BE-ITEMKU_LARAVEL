@@ -15,11 +15,8 @@ class ShopController extends Controller
 {
     public function createShop(Request $request){
         $checkToken = ApiHelper::checkToken($request);
-        if(!$checkToken){
-            return response()->json([
-                'status' => 'error',
-                'error' => 'Token is not match!'
-            ],404);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
         }
 
         $validator = Validator::make($request->all(), [
@@ -36,7 +33,7 @@ class ShopController extends Controller
         $setInsertData = [
             'user_id' => $checkToken,
             'name_shop' => $request->name_shop,
-            'path_image_shop' => '/assets/shop/profil_default.png'
+            'path_image_shop' => '/assets/shop/profil.png'
         ];
 
         try{
