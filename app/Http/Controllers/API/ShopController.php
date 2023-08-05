@@ -85,7 +85,7 @@ class ShopController extends Controller
             $getDataOrder = Orders::where([
                 'shop_id'=> $getDataShop['id_shop'],
             ])->get(['status_pesanan','created_at']);
-            $last_30_days['amount_buyer'] = Orders::distinct('buyer_id')->count();
+            $last_30_days['amount_buyer'] = Orders::where('shop_id', $getDataShop['id_shop'])->distinct('buyer_id')->count();
             
             $timeNow = Carbon::now();
             $last30DaysTime = $timeNow->copy()->subDays(30);
