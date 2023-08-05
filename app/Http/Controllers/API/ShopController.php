@@ -96,19 +96,19 @@ class ShopController extends Controller
             foreach($getDataOrder as $order){
                 $orderTimeCreate = $order['created_at'];
 
-                if($order['status'] === 'success'){
+                if($order['status_pesanan'] === 'success'){
                     $orderStatusCount['success'] += 1;
                     if($orderTimeCreate >= $last30DaysTime && $orderTimeCreate <= $timeNow){
                         $last_30_days['success_orders'] += 1;
                     }
 
-                }else if($order['status'] === 'confirmation'){
+                }else if($order['status_pesanan'] === 'confirmation'){
                     $orderStatusCount['confirmation'] += 1;
 
-                }else if($order['status'] === 'process'){
+                }else if($order['status_pesanan'] === 'process'){
                     $orderStatusCount['process'] += 1;
 
-                }else if($order['status'] === 'canceled'){
+                }else if($order['status_pesanan'] === 'canceled'){
                     $orderStatusCount['canceled'] += 1;
                     if($orderTimeCreate >= $last30DaysTime && $orderTimeCreate <= $timeNow){
                         $last_30_days['canceled_orders'] += 1;
