@@ -142,6 +142,66 @@ class ShopController extends Controller
             ], 500);
         }
     }
+
+    public function getDashboardPesanan(Request $request, $status){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+
+        try{
+            $getDataShop = Shops::where('user_id', $checkToken)->first();
+            $statusOrder = null; 
+
+            if($status === 'perlu-diproses'){
+                $statusOrder = 'process';
+                
+            }else if($status === 'menunggu-konfirmasi'){
+                $statusOrder = 'confirmation';
+
+            }else if($status === 'pesanan-selesai'){
+                $statusOrder = 'success';
+
+            }else if($status === 'pesanan-dibatalkan'){
+                $statusOrder = 'canceled';
+
+            }else{
+                return response()->json([
+                    'status' => 'Not Found'
+                ], 404);
+            }
+
+            $getDataOrder = Orders::where([
+                'shop_id'=> $getDataShop['id_shop'],
+                'status_pesanan' => $statusOrder
+            ])->with([
+                'users' => function($query){
+                    $query->select('id_user','username');
+                },
+                'products' => function($query){
+                    $query->select('id_product', 'sub_category_id', 'name_product','price_product');
+                },
+                'products.sub_categories' => function($query){
+                    $query->select('id_sub_category', 'name_sub_category');
+                }
+            ])->get(['product_id','buyer_id','shop_id','order_code','amount','status_pesanan','created_at']);
+
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => (count($getDataOrder) <= 0) ? 'Pesanan Tidak Ditemukan!' : count($getDataOrder).' Pesanan ditemukan',
+                'order_status' => $status,
+                'data' => $getDataOrder
+            ],200);
+            
+
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ],500);
+        }
+    }
+
 }
 
 
