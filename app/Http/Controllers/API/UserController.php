@@ -11,12 +11,10 @@ class UserController extends Controller
 {
     public function getUserData(Request $request){
         $checkTokenAndGetId = ApiHelper::checkToken($request);
-        if(!$checkTokenAndGetId){
-            return response()->json([
-                'status' => 'error',
-                'errors' => 'Mohon Login terlebih dahulu!'
-            ], 403);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
         }
+        
         try{
             $getUser = User::where('id_user',$checkTokenAndGetId)->with('shops')->first();
             if($getUser){
