@@ -62,7 +62,7 @@ class AuthController extends Controller
     public function logoutAndDeleteToken(Request $request){
         $tokenFE = $request->header('Authorization');
         $checkTokenAndGetId = ApiHelper::checkToken($request);
-        if(isset($$checkTokenAndGetId['status'])){
+        if(isset($checkTokenAndGetId['status'])){
             return response()->json($checkTokenAndGetId['body'], $checkTokenAndGetId['code']);
         }
 
