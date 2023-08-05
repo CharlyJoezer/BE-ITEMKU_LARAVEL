@@ -67,11 +67,8 @@ class ShopController extends Controller
 
     public function getDashboardShopHome(Request $request){
         $checkToken = ApiHelper::checkToken($request);
-        if(!$checkToken){
-            return response()->json([
-                'status' => 'error',
-                'error' => 'Token is not match!'
-            ],404);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
         }
         $id_user = $checkToken;
         
@@ -97,7 +94,7 @@ class ShopController extends Controller
             $last30DaysTime = $timeNow->copy()->subDays(30);
             
             foreach($getDataOrder as $order){
-                $orderTimeCreate = $getDataOrder['created_at'];
+                $orderTimeCreate = $order['created_at'];
 
                 if($order['status'] === 'success'){
                     $orderStatusCount['success'] += 1;
