@@ -25,23 +25,34 @@ class ApiHelper{
                     return $getToken['user_id'];
                 }
                 else{
-                    return response()->json([
-                        'status' => 'error',
-                        'error' => 'Token is not found'
-                    ], 403);
+                    return  [   
+                        'status' => false,
+                        'code' => 403,
+                        'body' => [
+                            'status' => 'error',
+                            'message' => 'Login Required'
+                        ]
+                    ];
                 }
-                
             }catch(\Exception){
-                return response()->json([
-                    'status' => 'Server Error',
-                    'error' => 'Server Error'
-                ], 500);
+                return  [   
+                            'status' => false,
+                            'code' => 500,
+                            'body' => [
+                                'status' => 'error',
+                                'message' => 'Server Error'
+                            ]
+                        ];
             }
         }else{
-            return response()->json([
-                'status' => 'error',
-                'error' => 'Token is not found'
-            ], 403);
+            return [    
+                        'status' => false,
+                        'code' => 403,
+                        'body' => [
+                            'status' => 'error',
+                            'message' => 'Login Required'
+                        ]
+                   ];
         }
     }
 }
