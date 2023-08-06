@@ -152,6 +152,13 @@ class ShopController extends Controller
 
         try{
             $getDataShop = Shops::where('user_id', $checkToken)->first();
+            if(!isset($getDataShop)){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data Toko tidak ditemukan'
+                ],404);
+            }
+            
             $statusOrder = null; 
 
             if($status === 'perlu-diproses'){
