@@ -82,6 +82,13 @@ class ShopController extends Controller
         ];
         try{
             $getDataShop = Shops::where('user_id', $id_user)->first();
+            if(!isset($getDataShop)){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data Toko tidak ditemukan'
+                ],404);
+            }
+
             $getDataOrder = Orders::where([
                 'shop_id'=> $getDataShop['id_shop'],
             ])->get(['status_pesanan','created_at']);
