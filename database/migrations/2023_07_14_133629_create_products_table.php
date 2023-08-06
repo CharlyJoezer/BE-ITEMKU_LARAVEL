@@ -23,6 +23,9 @@ return new class extends Migration
             $table->unsignedBigInteger('shop_id');
             $table->foreign('shop_id')->references('id_shop')->on('shops')->onDelete('cascade');
 
+            $table->unsignedBigInteger('type_sub_category_id');
+            $table->foreign('type_sub_category_id')->references('id_type_sub_category')->on('types_sub_categories')->onDelete('restrict');
+
             $table->string('name_product');
             $table->string('desc_product');
             $table->integer('price_product');
