@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id('id_order');
             $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id_product')->on('products');
+            $table->foreign('product_id')->references('id_product')->on('products')->onDelete('restrict')->onUpdate('restrict');
             
             $table->unsignedBigInteger('shop_id');
-            $table->foreign('shop_id')->references('id_shop')->on('shops')->onDelete('cascade');
+            $table->foreign('shop_id')->references('id_shop')->on('shops')->onDelete('restrict')->onUpdate('restrict');
             
             $table->unsignedBigInteger('buyer_id');
-            $table->foreign('buyer_id')->references('id_user')->on('users')->onDelete('cascade');
+            $table->foreign('buyer_id')->references('id_user')->on('users')->onDelete('cascade')->onUpdate('restrict');
 
             $table->string('order_code')->unique();
             $table->integer('amount');
