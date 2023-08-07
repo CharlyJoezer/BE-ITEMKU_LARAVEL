@@ -12,26 +12,17 @@ class SubCategoryController extends Controller
     public function getSubCategory(Request $request){
         $option = [
             'name' => $request['name_sub_category'],
-            'id' => $request['id_sub_category']
         ];
         try{
             $dataSubCategory = [];
-            if($option['name'] !== null && $option['id'] !== null){
-                $dataSubCategory = Sub_Categories::where('id_sub_category', $option['id'])
-                                                 ->where('name_sub_category', $option['name'])
-                                                 ->get(['id_sub_category as id', 'name_sub_category as name']);
-
-            }else if($option['id'] !== null){
-                $dataSubCategory = Sub_Categories::where('id_sub_category', $option['id'])
-                                                 ->get(['id_sub_category as id', 'name_sub_category as name']);
-
-            }else if($option['name'] !== null){
+            if($option['name'] !== null){
                 $dataSubCategory = Sub_Categories::where('name_sub_category', $option['name'])
-                                                 ->get(['id_sub_category as id', 'name_sub_category as name']);
+                                                 ->get(['name_sub_category as name']);
 
             }else{
-                $dataSubCategory = Sub_Categories::all(['id_sub_category as id', 'name_sub_category as name']);
+                $dataSubCategory = Sub_Categories::all(['name_sub_category as name']);
             }
+
 
             return response()->json([
                 "status" => "success",
