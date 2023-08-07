@@ -18,13 +18,13 @@ return new class extends Migration
             $table->id('id_product');
 
             $table->unsignedBigInteger('sub_category_id');
-            $table->foreign('sub_category_id')->default(0)->references('id_sub_category')->on('sub_categories')->onDelete('set default');
+            $table->foreign('sub_category_id')->default(0)->references('id_sub_category')->on('sub_categories')->onDelete('restrict')->onUpdate('restrict');
 
             $table->unsignedBigInteger('shop_id');
-            $table->foreign('shop_id')->references('id_shop')->on('shops')->onDelete('cascade');
+            $table->foreign('shop_id')->references('id_shop')->on('shops')->onDelete('cascade')->onUpdate('restrict');
 
             $table->unsignedBigInteger('type_sub_category_id');
-            $table->foreign('type_sub_category_id')->references('id_type_sub_category')->on('types_sub_categories')->onDelete('restrict');
+            $table->foreign('type_sub_category_id')->references('id_type_sub_category')->on('types_sub_categories')->onDelete('restrict')->onUpdate('restrict');
 
             $table->string('name_product');
             $table->string('desc_product');
