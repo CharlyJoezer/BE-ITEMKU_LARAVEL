@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ShopController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\API\SubCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +34,5 @@ Route::prefix('/shop/dashboard/')->group(function(){
     Route::GET('home', [ShopController::class, 'getDashboardShopHome']);
     Route::GET('pesanan/{status}', [ShopController::class, 'getDashboardPesanan']);
 });
+
+Route::GET('/sub-categories', [SubCategoryController::class, 'getSubCategory']);
