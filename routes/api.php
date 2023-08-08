@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ShopController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\SubCategoryController;
+use App\Http\Controllers\API\TypesSubCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,3 +37,4 @@ Route::prefix('/shop/dashboard/')->group(function(){
 });
 
 Route::GET('/sub-categories', [SubCategoryController::class, 'getSubCategory']);
+Route::GET('/types-sub-categories', [TypesSubCategoryController::class, 'getTypeSubCategory']);
