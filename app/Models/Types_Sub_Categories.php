@@ -9,6 +9,6 @@ class Types_Sub_Categories extends Model
 {
     use HasFactory;
 
-    protected $table = 'type_sub_categories';
+    protected $table = 'types_sub_categories';
     protected $guarded = ['id_type_sub_category'];
 }
