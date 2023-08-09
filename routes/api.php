@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ShopController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\RegisterController;
@@ -34,6 +35,7 @@ Route::POST('/shop/create', [ShopController::class, 'createShop']);
 Route::prefix('/shop/dashboard/')->group(function(){
     Route::GET('home', [ShopController::class, 'getDashboardShopHome']);
     Route::GET('pesanan/{status}', [ShopController::class, 'getDashboardPesanan']);
+    Route::POST('product', [ProductController::class, 'createProduct']);
 });
 
 Route::GET('/sub-categories', [SubCategoryController::class, 'getSubCategory']);
