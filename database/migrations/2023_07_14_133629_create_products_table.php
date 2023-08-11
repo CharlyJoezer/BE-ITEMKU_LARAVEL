@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('desc_product');
             $table->integer('price_product');
             $table->string('slug_product');
+            $table->integer('stock_product')->default(0);
             $table->string('path_image_product');
             $table->integer('min_buy');
             $table->integer('success_transaction')->default(0);
