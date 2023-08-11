@@ -40,6 +40,8 @@ Route::prefix('/shop/dashboard/')->group(function(){
 
     Route::GET('profil-toko', [ShopController::class, 'getProfilShop']);
     Route::PATCH('profil-toko', [ShopController::class, 'updateProfilShop']);
+
+    Route::PATCH('produk-toko', [ProductController::class, 'updatePriceAndStock']);
 });
 
 Route::GET('/sub-categories', [SubCategoryController::class, 'getSubCategory']);

@@ -110,4 +110,51 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+    public function updatePriceAndStock(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+
+        $validatedData = Validator::make($request->all(), [
+            'product' => 'required|numeric',
+            'price' => 'required|numeric|min:100|max:100000000',
+            'stock' => 'required|numeric|min:0|max:9999',
+        ]);
+        if($validatedData->fails()){
+            return response()->json([
+                'status' => 'Bad Request',
+                'message' => 'Request tidak lolos validasi',
+                'data' => $validatedData->errors(),
+            ], 400);
+        }
+
+        try{
+            $checkData = Product::with(['shops' => function($query) use ($checkToken){
+                $query->where('user_id', $checkToken)->select('id_shop', 'user_id');
+            }])->where('id_product', $request->product)->first(['id_product', 'shop_id']);
+            if(!isset($checkData) || !isset($checkData['shops'])){
+                return response()->json([
+                    'status' => 'Bad Request',
+                    'message' => 'Terjadi Ketidakcocokan Data'
+                ],400);
+            }
+
+            $updateProduct = Product::where('id_product', $request->product)->update(['price_product' => $request->price, 'stock_product' => $request->stock]);
+            if($updateProduct > 0){
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Data Product Berhasil diperbarui!'
+                ], 200);
+            }else{
+                throw new Exception();
+            }
+
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ],500);
+        }
+    }
 }
