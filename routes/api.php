@@ -36,6 +36,8 @@ Route::prefix('/shop/dashboard/')->group(function(){
     Route::GET('home', [ShopController::class, 'getDashboardShopHome']);
     Route::GET('pesanan/{status}', [ShopController::class, 'getDashboardPesanan']);
     Route::POST('product', [ProductController::class, 'createProduct']);
+    
+    Route::GET('profil-toko', [ShopController::class, 'getProfilShop']);
     Route::PATCH('profil-toko', [ShopController::class, 'updateProfilShop']);
 });
 

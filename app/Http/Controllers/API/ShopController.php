@@ -250,6 +250,29 @@ class ShopController extends Controller
             ], 500);
         }
     }
+
+    public function getProfilShop(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+
+        try{
+            $getShops = Shops::where('user_id', $checkToken)->first(['name_shop as name', 'path_image_shop as image', 'status']);
+            if($getShops){
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $getShops,
+                ], 200);
+            }else{
+                throw new Exception;
+            }
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ], 500);
+        }
+    }
 }
 
 
