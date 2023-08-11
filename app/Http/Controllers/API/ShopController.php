@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Shops;
 use App\Models\Orders;
 use App\Helpers\ApiHelper;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
@@ -210,6 +211,45 @@ class ShopController extends Controller
         }
     }
 
+    public function updateProfilShop(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+
+        $validateData = Validator::make($request->all(),[
+            'image_shop' => 'required|mimes:png,jpg,jpeg,gif|max:1024' 
+        ]);
+        if($validateData->fails()){
+            return response()->json([
+                'status' => 'Bad Request',
+                'message' => 'Request tidak lolos validasi',
+                'data' => $validateData->errors()
+            ], 400);
+        }
+
+        $path_image = Str::slug(Str::random(50).now(),'').'.'.$request->file('image_shop')->getClientOriginalExtension();
+
+        try{
+            $updateShop = Shops::where('user_id', $checkToken)
+                          ->update(['path_image_shop' => $path_image]);
+
+            if($updateShop > 0){
+                $request->file('image_shop')->storeAs('shop_image', $path_image, 'local');
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Data Profil berhasil diperbarui',
+                ], 200);
+            }else{
+                throw new Exception();
+            }
+
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ], 500);
+        }
+    }
 }
 
 
