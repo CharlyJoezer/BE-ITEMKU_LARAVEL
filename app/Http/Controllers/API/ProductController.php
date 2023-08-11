@@ -88,6 +88,7 @@ class ProductController extends Controller
                 'desc_product' => $request->input('desc_product'),
                 'price_product' => $request->input('price_product'),
                 'slug_product' => $slug,
+                'stock_product' => $request->input('stock_product'),
                 'path_image_product' => $path_image,
                 'min_buy' => $request->input('min_order_product'),
                 'success_transaction' => 0,
