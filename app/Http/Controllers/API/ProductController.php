@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
+use Error;
 use Exception;
 use App\Models\Shops;
+use App\Models\Orders;
 use App\Models\Product;
 use App\Helpers\ApiHelper;
-use App\Models\Categories;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Sub_Categories;
 use App\Http\Controllers\Controller;
 use App\Models\Types_Sub_Categories;
-use Error;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -215,6 +216,58 @@ class ProductController extends Controller
                 ],200);
             }
 
+
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ], 500);
+        }
+    }
+
+    public function deleteProduct(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+        $validatedData = Validator::make($request->all(), [
+            'product' => 'required|numeric'
+        ]);
+        if($validatedData->fails()){
+            return response()->json([
+                'status' => 'Bad Request',
+                'message' => 'Request tidak lolos validasi',
+                'data' => $validatedData->errors(),
+            ], 400);
+        }
+
+        try{
+            $getShopData = Shops::where('user_id', $checkToken)->first();
+            if(!isset($getShopData)){
+                return response()->json([
+                    'status' => 'Bad Request',
+                    'message' => 'Terjadi kesalahan request'
+                ], 400);
+            }
+            $checkOrderAlready = Orders::where('product_id', $request->product)
+                                       ->where('status_pesanan', '!=', 'canceled')
+                                       ->get();
+            if(count($checkOrderAlready) > 0){
+                return response()->json([
+                    'status' => 'Conflict',
+                    'message' => 'Sementara anda tidak bisa menghapus Produk'
+                ], 409);
+            }
+            $deleteProduct = Product::where('id_product', $request->product)
+                            ->where('shop_id', $getShopData['id_shop'])
+                            ->delete();
+            if($deleteProduct){
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Produk berhasil dihapus!'
+                ], 200);
+            }else{
+                throw new Exception();
+            }
 
         }catch(Exception){
             return response()->json([
