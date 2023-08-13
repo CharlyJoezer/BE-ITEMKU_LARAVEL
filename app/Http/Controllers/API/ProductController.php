@@ -173,21 +173,40 @@ class ProductController extends Controller
                     'message' => 'Terjadi Ketidakcocokan Data'
                 ],400);
             }
-
-            $getProduct = Product::with(['sub_categories' => function($query){
-                $query->select('id_sub_category','name_sub_category as name');
-            }, 'types_sub_categories' => function($query) {
-                $query->select('id_type_sub_category', 'name_type as name');
-            }])
-            ->where('shop_id', $getShop['id_shop'])
-            ->get([
-                    'id_product as id_p',
-                    'sub_category_id',
-                    'type_sub_category_id',
-                    'name_product as name',
-                    'price_product as harga',
-                    'stock_product as stock'
-                ]);
+            $search = $request->input('_search');
+            if(isset($search)){
+                $getProduct = Product::with(['sub_categories' => function($query){
+                    $query->select('id_sub_category','name_sub_category as name');
+                }, 'types_sub_categories' => function($query) {
+                    $query->select('id_type_sub_category', 'name_type as name');
+                }])
+                ->where('shop_id', $getShop['id_shop'])
+                ->where('name_product', 'like', '%'.$search.'%')
+                ->get([
+                        'id_product as id_p',
+                        'sub_category_id',
+                        'type_sub_category_id',
+                        'name_product as name',
+                        'price_product as harga',
+                        'stock_product as stock'
+                    ]);
+            }else{
+                $getProduct = Product::with(['sub_categories' => function($query){
+                    $query->select('id_sub_category','name_sub_category as name');
+                }, 'types_sub_categories' => function($query) {
+                    $query->select('id_type_sub_category', 'name_type as name');
+                }])
+                ->where('shop_id', $getShop['id_shop'])
+                ->get([
+                        'id_product as id_p',
+                        'sub_category_id',
+                        'type_sub_category_id',
+                        'name_product as name',
+                        'price_product as harga',
+                        'stock_product as stock'
+                    ]);
+            }
+            
             if($getProduct){
                 return response()->json([
                     'status' => 'success',
