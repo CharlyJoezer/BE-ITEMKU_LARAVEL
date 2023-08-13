@@ -19,4 +19,8 @@ class Product extends Model
     public function shops(){
         return $this->hasOne(Shops::class, 'id_shop', 'shop_id');
     }
+
+    public function types_sub_categories(){
+        return $this->hasOne(Types_Sub_Categories::class, 'id_type_sub_category', 'type_sub_category_id');
+    }
 }
