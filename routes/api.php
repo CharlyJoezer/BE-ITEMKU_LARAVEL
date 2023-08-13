@@ -46,6 +46,7 @@ Route::prefix('/shop/dashboard/')->group(function(){
     Route::DELETE('produk-toko', [ProductController::class, 'deleteProduct']);
 
     Route::GET('/produk/edit', [ProductController::class, 'getEditDataProduct']);
+    Route::PATCH('/produk/edit', [ProductController::class, 'updateDataProduct']);
 });
 
 Route::GET('/sub-categories', [SubCategoryController::class, 'getSubCategory']);

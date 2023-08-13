@@ -332,4 +332,57 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+    public function updateDataProduct(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+        $validatedData = Validator::make($request->all(), [
+            '_product' => 'required|numeric',
+            'gambar_produk' => 'required|mimes:png,jpg,jpeg,gif|max:1024',
+            'harga' => 'required|numeric',
+            'stock' => 'required|numeric',
+            'min_pembelian' => 'required|numeric',
+        ]);
+        if($validatedData->fails()){
+            return response()->json([
+                'status' => 'Bad Request',
+                'message' => 'Request tidak lolos validasi',
+                'data' => $validatedData->errors(),
+            ], 400);
+        }
+
+        try{
+            $getShopData = Shops::where('user_id', $checkToken)->first();
+            if(!isset($getShopData)){
+                return response()->json([
+                    'status' => 'Bad Request',
+                    'message' => 'Terjadi kesalahan request'
+                ], 400);
+            }
+            
+            $updateProduct = Product::where('id_product', $request->_product)
+                                    ->where('shop_id', $getShopData['id_shop'])
+                                    ->update([
+                                        'path_image_product' => $request->gambar_produk,
+                                        'price_product' => $request->harga,
+                                        'stock_product' => $request->stock,
+                                        'min_buy' => $request->min_pembelian,
+                                    ]);
+            if($updateProduct > 0){
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Berhasil update produk!'
+                ], 200);
+            }else{
+                throw new Exception();
+            }
+
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ],500);
+        }
+    }
 }
