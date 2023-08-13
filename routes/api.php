@@ -44,6 +44,8 @@ Route::prefix('/shop/dashboard/')->group(function(){
     Route::PATCH('produk-toko', [ProductController::class, 'updatePriceAndStock']);
     Route::GET('produk-toko', [ProductController::class, 'getShopDashboardProduct']);
     Route::DELETE('produk-toko', [ProductController::class, 'deleteProduct']);
+
+    Route::GET('/produk/edit', [ProductController::class, 'getEditDataProduct']);
 });
 
 Route::GET('/sub-categories', [SubCategoryController::class, 'getSubCategory']);

@@ -275,4 +275,61 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+    public function getEditDataProduct(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+        $validatedData = Validator::make($request->all(), [
+            '_product' => 'required|numeric'
+        ]);
+        if($validatedData->fails()){
+            return response()->json([
+                'status' => 'Bad Request',
+                'message' => 'Request tidak lolos validasi',
+                'data' => $validatedData->errors(),
+            ], 400);
+        }
+
+        try{
+            $getShopData = Shops::where('user_id', $checkToken)->first();
+            if(!isset($getShopData)){
+                return response()->json([
+                    'status' => 'Bad Request',
+                    'message' => 'Terjadi kesalahan request'
+                ], 400);
+            }
+
+            $getDataProduct = Product::with(['sub_categories','types_sub_categories'])
+                                     ->where('id_product', $request->_product)
+                                     ->where('shop_id', $getShopData['id_shop'])
+                                     ->first();
+            if(!isset($getDataProduct)){
+                return response()->json([
+                    'status' => 'Not Found',
+                    'message' => 'Product tidak ditemukan'
+                ],404);
+            }else{
+                $setBodyData = [
+                    'kategori' => $getDataProduct['sub_categories']['name_sub_category'],
+                    'tipe_kategori' => $getDataProduct['types_sub_categories']['name_type'],
+                    'name_product' => $getDataProduct['name_product'],
+                    'gambar_produk' => $getDataProduct['path_image_product'],
+                    'desc' => $getDataProduct['desc_product'],
+                    'harga' => $getDataProduct['price_product'],
+                    'stock' => $getDataProduct['stock_product'],
+                    'min_pembelian' => $getDataProduct['min_buy'],
+                ];
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $setBodyData
+                ], 200);                
+            }
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ], 500);
+        }
+    }
 }
