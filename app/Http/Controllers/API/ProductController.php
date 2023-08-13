@@ -158,4 +158,49 @@ class ProductController extends Controller
             ],500);
         }
     }
+
+    public function getShopDashboardProduct(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+
+        try{
+            $getShop = Shops::where('user_id' , $checkToken)->first();
+            if(!isset($getShop)){
+                return response()->json([
+                    'status' => 'Bad Request',
+                    'message' => 'Terjadi Ketidakcocokan Data'
+                ],400);
+            }
+
+            $getProduct = Product::with(['sub_categories' => function($query){
+                $query->select('id_sub_category','name_sub_category as name');
+            }, 'types_sub_categories' => function($query) {
+                $query->select('id_type_sub_category', 'name_type as name');
+            }])
+            ->where('shop_id', $getShop['id_shop'])
+            ->get([
+                    'id_product as id_p',
+                    'sub_category_id',
+                    'type_sub_category_id',
+                    'name_product as name',
+                    'price_product as harga',
+                    'stock_product as stock'
+                ]);
+            if($getProduct){
+                return response()->json([
+                    'status' => 'success',
+                    'message' => count($getProduct).' Produk ditemukan!',
+                    'data' => $getProduct
+                ],200);
+            }
+
+
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ], 500);
+        }
+    }
 }
