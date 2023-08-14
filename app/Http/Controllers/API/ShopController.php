@@ -273,6 +273,54 @@ class ShopController extends Controller
             ], 500);
         }
     }
+
+    public function setStatusShop(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+
+        $validateData = Validator::make($request->all(), [
+            'status' => 'required|string|max:5'
+        ]);
+        if($validateData->fails()){
+            return response()->json([
+                'status' => 'Bad Request',
+                'message' => 'Request tidak lolos validasi',
+                'data' => $validateData->errors(),
+            ], 400);
+        }
+
+        try{
+            $getShopData = Shops::where('user_id', $checkToken)->first();
+            if(!isset($getShopData)){
+                return response()->json([
+                    'status' => 'Bad Request',
+                    'message' => 'Kamu belum memiliki Toko'
+                ], 400);    
+            }
+
+            $status = ($request->status == 'true') ? 'Tutup' : 'Buka';
+            $updateStatus = Shops::where('user_id', $checkToken)
+                                 ->update([
+                                    'status' => $status
+                                 ]);
+            if($updateStatus > 0){
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Status Toko '.$status,
+                ], 200);
+            }else{
+                throw new Exception();
+            }
+
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ], 500);
+        }
+
+    }
 }
 
 
