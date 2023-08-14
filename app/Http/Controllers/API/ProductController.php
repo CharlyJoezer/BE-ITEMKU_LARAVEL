@@ -363,6 +363,12 @@ class ProductController extends Controller
                 ], 400);
             }
             $getOldDataProduct = Product::where('id_product', $request->_product)->first();
+            if(!isset($getOldDataProduct)){
+                return response()->json([
+                    'status' => 'Not Found',
+                    'message' => 'Produk tidak ditemukan',
+                ], 404);
+            }
             
             $dataUpdate = [
                 'price_product' => $request->harga,
