@@ -14,6 +14,7 @@ use App\Models\Sub_Categories;
 use App\Http\Controllers\Controller;
 use App\Models\Types_Sub_Categories;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -340,7 +341,7 @@ class ProductController extends Controller
         }
         $validatedData = Validator::make($request->all(), [
             '_product' => 'required|numeric',
-            'gambar_produk' => 'required|mimes:png,jpg,jpeg,gif|max:1024',
+            'gambar_produk' => $request->file('gambar_produk') ? 'required|mimes:png,jpg,jpeg,gif|max:1024' : '',
             'harga' => 'required|numeric',
             'stock' => 'required|numeric',
             'min_pembelian' => 'required|numeric',
@@ -361,16 +362,26 @@ class ProductController extends Controller
                     'message' => 'Terjadi kesalahan request'
                 ], 400);
             }
+            $getOldDataProduct = Product::where('id_product', $request->_product)->first();
             
+            $dataUpdate = [
+                'price_product' => $request->harga,
+                'stock_product' => $request->stock,
+                'min_buy' => $request->min_pembelian,
+            ];
+            $path_image = '';
+            if($request->file('gambar_produk') != null){
+                $path_image = Str::slug(Str::random(50).now(),'').'.'.$request->file('gambar_produk')->getClientOriginalExtension();
+                $dataUpdate['path_image_product'] = $path_image;
+            }
             $updateProduct = Product::where('id_product', $request->_product)
                                     ->where('shop_id', $getShopData['id_shop'])
-                                    ->update([
-                                        'path_image_product' => $request->gambar_produk,
-                                        'price_product' => $request->harga,
-                                        'stock_product' => $request->stock,
-                                        'min_buy' => $request->min_pembelian,
-                                    ]);
+                                    ->update($dataUpdate);
             if($updateProduct > 0){
+                if($request->file('gambar_produk') != null){
+                    Storage::delete('product_image/'.$getOldDataProduct['path_image_product']);
+                    $request->file('gambar_produk')->storeAs('product_image', $path_image, 'local');
+                }
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Berhasil update produk!'
