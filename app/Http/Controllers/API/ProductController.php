@@ -342,6 +342,7 @@ class ProductController extends Controller
         $validatedData = Validator::make($request->all(), [
             '_product' => 'required|numeric',
             'gambar_produk' => $request->file('gambar_produk') ? 'required|mimes:png,jpg,jpeg,gif|max:1024' : '',
+            'desc' => 'required|max:1000',
             'harga' => 'required|numeric',
             'stock' => 'required|numeric',
             'min_pembelian' => 'required|numeric',
@@ -371,6 +372,7 @@ class ProductController extends Controller
             }
             
             $dataUpdate = [
+                'desc_product' => $request->desc,
                 'price_product' => $request->harga,
                 'stock_product' => $request->stock,
                 'min_buy' => $request->min_pembelian,
