@@ -258,10 +258,13 @@ class ProductController extends Controller
                     'message' => 'Sementara anda tidak bisa menghapus Produk'
                 ], 409);
             }
+            $getImagePath = Product::where('id_product', $request->product)
+                               ->where('shop_id', $getShopData['id_shop'])->first('path_image_product');
             $deleteProduct = Product::where('id_product', $request->product)
                             ->where('shop_id', $getShopData['id_shop'])
                             ->delete();
             if($deleteProduct){
+                Storage::delete('product_image/'.$getImagePath['path_image_product']);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Produk berhasil dihapus!'
