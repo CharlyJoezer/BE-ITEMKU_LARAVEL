@@ -458,4 +458,53 @@ class ProductController extends Controller
             ]);
         }
     }
+
+    public function getDetailProduct(Request $request){
+        $validation = Validator::make($request->all(), [
+            'slug' => 'required'
+        ]);
+
+        if($validation->fails()){
+            return response()->json([
+                'status' => 'Bad Request',
+                'message' => $validation->errors(),
+            ],400);
+        }
+
+        try{
+            $slug = $request->input('slug');
+            $getProduct = Product::with(['sub_categories','shops', 'types_sub_categories'])->where('slug_product', $slug)->get();
+            if(count($getProduct) <= 0){
+                return response()->json([
+                    'status' => 'Not Found',
+                    'message' => 'Produk tidak ditemukan!'
+                ],404);
+            }
+            $filterData = $getProduct->map(function($product){
+                                return [
+                                    'gambar_produk' => $product->path_image_product,
+                                    'nama_produk' => $product->name_product,
+                                    'kategori_produk' => $product->sub_categories->name_sub_category,
+                                    'kategori_produk' => $product->types_sub_categories->name_type,
+                                    'harga_produk' => $product->price_product,
+                                    'min_pembelian' => $product->min_buy,
+                                    'transaksi_berhasil' => $product->transaction_success,
+                                    'nama_toko' => $product->shops->name_shop,
+                                    'status_toko' => $product->shops->status,
+                                    'desk_produk' => $product->desc_product,
+                                ];
+                            })[0];
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Produk ditemukan!',
+                'data' => $filterData,
+            ], 200);
+            
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error',
+            ],500);
+        }
+    }
 }

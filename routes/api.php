@@ -57,3 +57,4 @@ Route::GET('/types-sub-categories', [TypesSubCategoryController::class, 'getType
 Route::GET('/image/{folder_path}/{image_name}', [ImageController::class, 'getImage']);
 
 Route::GET('/product', [ProductController::class, 'getAllProduct']);
+Route::GET('/product/detail-product', [ProductController::class, 'getDetailProduct']);
