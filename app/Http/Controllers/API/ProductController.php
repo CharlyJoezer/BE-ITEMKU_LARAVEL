@@ -483,12 +483,14 @@ class ProductController extends Controller
             $filterData = $getProduct->map(function($product){
                                 return [
                                     'gambar_produk' => $product->path_image_product,
+                                    'gambar_toko' => $product->shops->path_image_shop,
                                     'nama_produk' => $product->name_product,
                                     'kategori_produk' => $product->sub_categories->name_sub_category,
-                                    'kategori_produk' => $product->types_sub_categories->name_type,
+                                    'tipe_kategori_produk' => $product->types_sub_categories->name_type,
                                     'harga_produk' => $product->price_product,
                                     'min_pembelian' => $product->min_buy,
-                                    'transaksi_berhasil' => $product->transaction_success,
+                                    'transaksi_berhasil' => $product->success_transaction,
+                                    'durasi_transaksi' => $product->duration_transaction,
                                     'nama_toko' => $product->shops->name_shop,
                                     'status_toko' => $product->shops->status,
                                     'desk_produk' => $product->desc_product,
