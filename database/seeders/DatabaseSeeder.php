@@ -26,5 +26,33 @@ class DatabaseSeeder extends Seeder
             'email' => 'user@gmail.com',
             'password' => 'user'
         ]);
+        \App\Models\Categories::insert(
+            [
+                'name_category' => 'Mobile Game',
+            ],
+            [
+                'name_category' => 'PC Game',
+            ],
+        );
+        \App\Models\Sub_Categories::insert(
+            [
+                'name_sub_category' => 'Growtopia',
+                'category_id' => 1,
+            ],
+            [
+                'name_sub_category' => 'Free Fire',
+                'category_id' => 1,
+            ],
+        );
+        \App\Models\Types_Sub_Categories::insert(
+            [
+                'name_type' => 'Akun',
+                'sub_category_id' => 1,
+            ],
+            [
+                'name_type' => 'Diamond',
+                'sub_category_id' => 2,
+            ],
+        );
     }
 }
