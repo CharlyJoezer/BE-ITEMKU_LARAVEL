@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\ImageController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ShopController;
@@ -58,3 +59,5 @@ Route::GET('/image/{folder_path}/{image_name}', [ImageController::class, 'getIma
 
 Route::GET('/product', [ProductController::class, 'getAllProduct']);
 Route::GET('/product/detail-product', [ProductController::class, 'getDetailProduct']);
+
+Route::POST('/cart', [CartController::class, 'insertCart']);
