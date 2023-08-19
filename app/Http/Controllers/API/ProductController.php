@@ -485,6 +485,7 @@ class ProductController extends Controller
                                     'gambar_produk' => $product->path_image_product,
                                     'gambar_toko' => $product->shops->path_image_shop,
                                     'nama_produk' => $product->name_product,
+                                    'slug_produk' => $product->slug_product,
                                     'kategori_produk' => $product->sub_categories->name_sub_category,
                                     'tipe_kategori_produk' => $product->types_sub_categories->name_type,
                                     'harga_produk' => $product->price_product,
