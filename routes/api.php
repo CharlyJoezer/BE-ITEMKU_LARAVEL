@@ -61,3 +61,4 @@ Route::GET('/product', [ProductController::class, 'getAllProduct']);
 Route::GET('/product/detail-product', [ProductController::class, 'getDetailProduct']);
 
 Route::POST('/cart', [CartController::class, 'insertCart']);
+Route::GET('/cart', [CartController::class, 'getDataCart']);

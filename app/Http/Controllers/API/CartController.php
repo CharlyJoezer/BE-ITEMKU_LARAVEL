@@ -55,4 +55,45 @@ class CartController extends Controller
             ], 500);
         }
     }
+
+    public function getDataCart(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+        try{
+            $getCartData = Carts::with(['products' => [
+                'sub_categories',
+                'shops',
+            ]])
+            ->where('user_id', $checkToken)
+            ->get();
+
+            if($getCartData){
+                $filterData = $getCartData->map(function($cart){
+                    return [
+                        'path_image_product' => $cart->products->path_image_product,
+                        'nama_produk' => $cart->products->name_product,
+                        'kategori_produk' => $cart->products->sub_categories->name_sub_category,
+                        'harga_produk' => $cart->products->price_product,
+                        'stok_produk' => $cart->products->stock_product,
+                        'slug_produk' => $cart->products->slug_product,
+                        'nama_toko' => $cart->products->shops->name_shop,
+                        'jumlah_produk' => $cart->count_product,
+                    ];
+                });
+                return response()->json([
+                    'status' => 'success',
+                    'message' => count($getCartData).' Data ditemukan!',
+                    'data' => $filterData,
+                ],200);
+            }else{
+                throw new Exception();
+            }
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error',
+            ], 500);
+        }
+    }
 }
