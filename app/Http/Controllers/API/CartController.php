@@ -96,4 +96,70 @@ class CartController extends Controller
             ], 500);
         }
     }
+
+    public function updateDataCart(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+        $validation = Validator::make($request->all(), [
+            'product' => 'required|string'
+        ]);
+        if($validation->fails()){
+            return response()->json([
+                'status' => 'Bad Request',
+                'message' => $validation->errors()
+            ], 400);
+        }
+
+        $fieldUpdate = [];
+        if(isset($request->amount_product)){
+            $fieldUpdate['count_product'] = $request->amount_product;
+        }else{
+            return response()->json([
+                'status' => 'Bad Request',
+                'message' => 'You must send 1 field name to update the data!',
+            ], 400);
+        }
+        try{
+            $checkProduct = Product::where('slug_product', $request->product)->first(['id_product']);
+            if(!isset($checkProduct)){
+                return response()->json([
+                    'status' => 'Bad Request',
+                    'message' => 'Error, Produk tidak ditemukan!'
+                ], 400);
+            }
+
+            $checkDataCart = Carts::where([
+                'user_id' => $checkToken,
+                'product_id' => $checkProduct['id_product']
+            ])->first();
+            if(!isset($checkDataCart)){
+                return response()->json([
+                    'status' => 'Bad Request',
+                    'message' => 'Terjadi Kesalahan'
+                ], 400);
+            }
+
+            $updateCart = Carts::where([
+                'user_id' => $checkToken,
+                'product_id' => $checkProduct['id_product']
+            ])->update($fieldUpdate);
+            if($updateCart > 0){
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Update berhasil!'
+                ], 200);
+            }else{
+                throw new Exception;
+            }
+
+            return $checkDataCart;
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ], 500);
+        }
+
+    }
 }
