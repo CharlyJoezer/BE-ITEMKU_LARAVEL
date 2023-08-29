@@ -63,3 +63,4 @@ Route::GET('/product/detail-product', [ProductController::class, 'getDetailProdu
 Route::POST('/cart', [CartController::class, 'insertCart']);
 Route::GET('/cart', [CartController::class, 'getDataCart']);
 Route::PATCH('/cart', [CartController::class, 'updateDataCart']);
+Route::DELETE('/cart', [CartController::class, 'deleteDataCart']);

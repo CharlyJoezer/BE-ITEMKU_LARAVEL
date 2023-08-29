@@ -162,4 +162,50 @@ class CartController extends Controller
         }
 
     }
+
+    public function deleteDataCart(Request $request){
+        $checkToken = ApiHelper::checkToken($request);
+        if(isset($checkToken['status'])){
+            return response()->json($checkToken['body'], $checkToken['code']);
+        }
+        $validation = Validator::make($request->all(), [
+            'slug' => 'required|string'
+        ]);
+        if($validation->fails()){
+            return response()->json([
+                'status' => 'success',
+                'message' => 'request slug tidak ditemukan!'
+            ], 400);
+        }
+        try{
+            $getDataProduct = Product::where('slug_product', $request->slug)->first(['id_product']);
+            if(!isset($getDataProduct)){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data Produk tidak ditemukan!'
+                ], 400);
+            }
+            $getDataCart = Carts::where('product_id', $getDataProduct['id_product'])->first();
+            if(!isset($getDataCart)){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Terjadi Kesalahan, Coba lagi!'
+                ], 400);
+            }
+
+            $deleteCart = Carts::where('id_cart', $getDataCart['id_cart'])->delete();
+            if($deleteCart){
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Produk Keranjang berhasil dihapus!'
+                ], 200);
+            }else{
+                throw new Exception();
+            }
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error'
+            ], 500);
+        }
+    }
 }
