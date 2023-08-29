@@ -35,19 +35,32 @@ class CartController extends Controller
                     'message' => 'Produk tidak ditemukan',
                 ], 404);
             }
-            $insertCart = Carts::create([
-                'user_id' => $checkToken,
-                'product_id' => $getProductData->id_product,
-                'count_product' => 1
-            ]);
-            if($insertCart){
-                return response()->json([
-                    'status' => 'success',
-                    'message' => '1 Produk berhasil ditambahkan',
-                ], 201);
+            $checkAlreadyInCart = Carts::where([
+                'product_id' => $getProductData['id_product'],
+                'user_id' => $checkToken, 
+            ])->first();
+            if(isset($checkAlreadyInCart)){
+                $updateCart = Carts::where([
+                    'product_id' => $getProductData['id_product'],
+                    'user_id' => $checkToken, 
+                ])->update(['count_product' => $checkAlreadyInCart['count_product'] + 1]);
+                if(!($updateCart > 0)){
+                    throw new Exception;
+                }
             }else{
-                throw new Exception();
+                $insertCart = Carts::create([
+                    'user_id' => $checkToken,
+                    'product_id' => $getProductData->id_product,
+                    'count_product' => 1,
+                ]);
+                if(!$insertCart){
+                    throw new Exception;
+                }
             }
+            return response()->json([
+                'status' => 'success',
+                'message' => '1 Produk berhasil ditambahkan',
+            ], 201);
 
         }catch(Exception){
             return response()->json([
