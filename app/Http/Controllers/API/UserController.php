@@ -25,6 +25,7 @@ class UserController extends Controller
                         'username' => $getUser->username,
                         'email' => $getUser->email,
                         'shops' => !isset($getUser->shops->name_shop) ? null : $getUser->shops->name_shop,
+                        'foto_profil' => $getUser->path_image_user,
                     ]
                 ],200);
             }else{
