@@ -17,6 +17,8 @@ class ImageController extends Controller
                 $path = 'product_image/' . $image_name;
             }else if($path_image === 'shop'){
                 $path = 'shop_image/' . $image_name;
+            }else if($path_image === 'user'){
+                $path = 'user_image/' . $image_name;
             }else{
                 return response()->json([
                     'status' => 'Not Found'
