@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ShopController extends Controller
@@ -216,9 +217,8 @@ class ShopController extends Controller
         if(isset($checkToken['status'])){
             return response()->json($checkToken['body'], $checkToken['code']);
         }
-
         $validateData = Validator::make($request->all(),[
-            'image_shop' => 'required|mimes:png,jpg,jpeg,gif|max:1024' 
+            'image_shop' => $request->file('image_shop') ? 'required|mimes:png,jpg,jpeg,gif|max:1024' : '' 
         ]);
         if($validateData->fails()){
             return response()->json([
@@ -228,14 +228,22 @@ class ShopController extends Controller
             ], 400);
         }
 
-        $path_image = Str::slug(Str::random(50).now(),'').'.'.$request->file('image_shop')->getClientOriginalExtension();
-
+        $path_image = null;
+        if($request->file('image_shop')){
+            $path_image = Str::slug(Str::random(50).now(),'').'.'.$request->file('image_shop')->getClientOriginalExtension();
+        }
         try{
+            $getDataShop = Shops::where('user_id', $checkToken)->first();
             $updateShop = Shops::where('user_id', $checkToken)
-                          ->update(['path_image_shop' => $path_image]);
+                          ->update(['path_image_shop' => isset($path_image) ? $path_image : '/assets/shop/profil.png']);
 
             if($updateShop > 0){
-                $request->file('image_shop')->storeAs('shop_image', $path_image, 'local');
+                if($path_image !== null){
+                    if($getDataShop['path_image_shop'] !== '/assets/shop/profil.png'){
+                        Storage::delete('shop_image/'.$getDataShop['path_image_shop']);
+                    }
+                    $request->file('image_shop')->storeAs('shop_image', $path_image, 'local');
+                }
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Data Profil berhasil diperbarui',
