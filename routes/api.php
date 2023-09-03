@@ -66,3 +66,5 @@ Route::PATCH('/cart', [CartController::class, 'updateDataCart']);
 Route::DELETE('/cart', [CartController::class, 'deleteDataCart']);
 
 Route::PATCH('/auth/user', [UserController::class, 'updateDataUser']);
+
+Route::GET('/search/{slug}', [ProductController::class, 'searchProduct']);

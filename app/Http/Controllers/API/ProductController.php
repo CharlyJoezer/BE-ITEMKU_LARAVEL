@@ -510,4 +510,68 @@ class ProductController extends Controller
             ],500);
         }
     }
+
+    public function searchProduct($search){
+        if(!isset($search)){
+            return response()->json([
+                'status' => 'Not Found',
+                'message' => 'Kata kunci pencarian tidak ditemukan!'
+            ], 404);
+        }
+
+        try{
+            $filterSearchWord = str_replace([
+                '-','/','%','|','?','<','>','=',';',':','+','(',')'
+            ], ' ', $search);
+            $getAllProduct = Product::with(['sub_categories', 'shops'])
+            ->where('name_product', 'LIKE', "%$filterSearchWord%")
+            ->select([
+                'id_product',
+                'sub_category_id',
+                'shop_id',
+                'name_product',
+                'price_product',
+                'path_image_product',
+                'slug_product',
+                ])->paginate(10);
+            $getAllProduct->getCollection()->transform(function($product){
+                unset($product->id_product);
+                unset($product->sub_category_id);
+                unset($product->types_sub_category_id);
+                unset($product->shop_id);
+                $product->sub_categories->makeHidden([
+                    'id_sub_category',
+                    'category_id',
+                    'created_at',
+                    'updated_at',    
+                ]);
+                $product->shops->makeHidden([
+                    'id_shop',
+                    'user_id',
+                    'created_at',
+                    'updated_at',    
+                    'status',    
+                ]);
+                return [
+                    'nama_produk' => $product->name_product,
+                    'gambar_produk' => $product->path_image_product,
+                    'kategori_produk' => $product->sub_categories->name_sub_category,
+                    'slug' => $product->slug_product,
+                    'harga_produk' => $product->price_product,
+                    'nama_toko' => $product->shops->name_shop,
+                ];
+            });
+
+
+            return response()->json([
+                'status' => 'success',
+                'message' => count($getAllProduct).' Product ditemukan!',
+                'data' => $getAllProduct,
+            ], 200);
+        }catch(Exception){
+            return response()->json([
+                'status' => 'Server Error',
+            ], 500);
+        }
+    }
 }
