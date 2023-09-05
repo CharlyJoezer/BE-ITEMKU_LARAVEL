@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('category_id')->references('id_category')->on('categories')->onDelete('cascade');
 
             $table->string('name_sub_category');
-
+            $table->string('path_image_sub_categories');
             $table->timestamps();
         });
         Schema::enableForeignKeyConstraints();
