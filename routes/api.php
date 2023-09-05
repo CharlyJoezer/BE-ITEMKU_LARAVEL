@@ -1,14 +1,16 @@
 <?php
 
+use App\Models\Categories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CartController;
-use App\Http\Controllers\API\ImageController;
-use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ShopController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\ImageController;
+use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\API\CategoriesController;
 use App\Http\Controllers\API\SubCategoryController;
 use App\Http\Controllers\API\TypesSubCategoryController;
 
@@ -68,3 +70,4 @@ Route::DELETE('/cart', [CartController::class, 'deleteDataCart']);
 Route::PATCH('/auth/user', [UserController::class, 'updateDataUser']);
 
 Route::GET('/search/{slug}', [ProductController::class, 'searchProduct']);
+Route::GET('/categories', [CategoriesController::class, 'indexCategories']);
