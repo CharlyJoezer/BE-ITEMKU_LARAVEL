@@ -1,3 +1,7 @@
-*
 !public/
+!user_image/*
+!categories_image/*
+!product_image/*
+!shop_image/*
+!sub_categories_image/*
 !.gitignore
