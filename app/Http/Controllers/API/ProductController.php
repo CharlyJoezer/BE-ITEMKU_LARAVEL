@@ -511,7 +511,7 @@ class ProductController extends Controller
         }
     }
 
-    public function searchProduct($search){
+    public function searchProduct(Request $request, $search){
         if(!isset($search)){
             return response()->json([
                 'status' => 'Not Found',
@@ -519,12 +519,60 @@ class ProductController extends Controller
             ], 404);
         }
 
-        try{
+        // try{
             $filterSearchWord = str_replace([
                 '-','/','%','|','?','<','>','=',';',':','+','(',')'
             ], ' ', $search);
+            $whereQuery = [
+                ['name_product', 'LIKE', "%$filterSearchWord%"],
+            ];
+            if(isset($request->sub_category)){
+                $validationSubCategory = Validator::make($request->all(), [
+                    'sub_category' => 'required|string'
+                ]);
+                if($validationSubCategory->fails()){
+                    return response()->json([
+                        'status' => 'Bad Request',
+                        'message' => $validationSubCategory->errors(),
+                    ], 400);
+                }else{
+                    $getSubCategory = Sub_Categories::where('name_sub_category', str_replace('-',' ',$request->sub_category))->first();
+                    if(!isset($getSubCategory)){
+                        return response()->json([
+                            'status' => 'Bad Request',
+                            'message' => 'Sub Kategori tidak ditemukan!',
+                        ], 400);
+                    }
+                    array_push($whereQuery, ['sub_category_id', '=', $getSubCategory->id_sub_category]);
+                    if(isset($request->type)){
+                        if($request->type !== 'all'){
+                            $validationTypeSubCategory = Validator::make($request->all(), [
+                                'type' => 'required|string'
+                            ]);
+                            if($validationTypeSubCategory->fails()){
+                                return response()->json([
+                                    'status' => 'Bad Request',
+                                    'message' => $validationTypeSubCategory->errors(),
+                                ], 400);
+                            }else{
+                                $getTypeSubCategory = Types_Sub_Categories::where([
+                                    ['name_type', str_replace('-',' ',$request->type)],
+                                    ['sub_category_id', $getSubCategory['id_sub_category']],
+                                    ])->first();
+                                if(!isset($getTypeSubCategory)){
+                                    return response()->json([
+                                        'status' => 'Bad Request',
+                                        'message' => 'Tipe Sub Kategori tidak ditemukan!',
+                                    ], 400);
+                                }
+                                array_push($whereQuery, ['type_sub_category_id', '=', $getTypeSubCategory->id_type_sub_category]);
+                            }
+                        }
+                    }
+                }
+            }
             $getAllProduct = Product::with(['sub_categories', 'shops'])
-            ->where('name_product', 'LIKE', "%$filterSearchWord%")
+            ->where($whereQuery)
             ->select([
                 'id_product',
                 'sub_category_id',
@@ -568,10 +616,10 @@ class ProductController extends Controller
                 'message' => count($getAllProduct).' Product ditemukan!',
                 'data' => $getAllProduct,
             ], 200);
-        }catch(Exception){
-            return response()->json([
-                'status' => 'Server Error',
-            ], 500);
-        }
+        // }catch(Exception){
+        //     return response()->json([
+        //         'status' => 'Server Error',
+        //     ], 500);
+        // }
     }
 }
