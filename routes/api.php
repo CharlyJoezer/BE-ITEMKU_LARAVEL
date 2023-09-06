@@ -71,3 +71,4 @@ Route::PATCH('/auth/user', [UserController::class, 'updateDataUser']);
 
 Route::GET('/search/{slug}', [ProductController::class, 'searchProduct']);
 Route::GET('/categories', [CategoriesController::class, 'indexCategories']);
+Route::GET('/sub_categories/{subCategory}', [TypesSubCategoryController::class, 'getProductByTypeCategory']);
